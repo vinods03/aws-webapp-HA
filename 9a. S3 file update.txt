@@ -1,0 +1,1 @@
+Update db.php with RDS details and replace the file in the my-restaurant-bucket (S3)

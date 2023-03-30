@@ -1,0 +1,44 @@
+=================================================
+
+Note that, we specify the VPC and the subnets in which to launch instances in both the Load balancer and ASG.
+This is because load balancer and ASG can function independently as well. 
+For example, you can create another ASG but without attaching it to the load balancer we created in this exercise. 
+If that is the case, the ASG needs to know where to launch the instances.
+
+
+===================================================
+
+The advantage of associating your ASG with an ALB is that the ALB will ensure traffic is balanced across the instances launched by the ASG.
+
+Suppose one instance beecomes unhealthy. Load balancer detects it and does not route traffic to that instance.
+ASG then terminates that instance and launches a replacement instance.
+Once the replacement instance is fully up, the load balancer again balances the load across all available instances.
+
+
+===================================================
+
+Steps:
+
+
+Create Target group / groups for different kinds of Traffic.
+For example: create one Target group for HTTP 80 traffic and another Target group for HTTPS 443 traffic.
+Also configure health check - file name to verify and threshold parameters.
+
+Create Load Balancer.
+Specify the VPC and subnets in which to launch instances.
+Select atleast 2 different AZs for high availibility.
+Associate the traffic to the Target groups created above.
+Ex: HTTP 80 traffic to target group 1 and HTTPS 443 traffic to target group 2.
+So health checks get associated with the load balancer.
+1 target group can have a healthy thresold of 5 whereas another target group associated with the same load balancer can have healthy threshold of 2.
+
+Create Launch configuration.
+This is where you mention the instance type, AMI, ubootstrap script, security group and iam role to be used for the instances.
+Also choose to Assign a public IP address to every instance -> without this, you will get the 502 Bad Gateway Error.
+
+Create Auto Scaling Group using the launch configuration.
+Specify the VPC and subnets in which to launch instances.
+Select atleast 2 different AZs for high availibility.
+Associate the Auto Scaling Group to the Load Balancer / Load Balancer Target groups.
+Set the auto scaling policy -> desired number of instances, max number of instances, when to scale out, whether to scale in etc.
+You can choose to send notifications when there are scale in / scale out activities happening.
